@@ -1,9 +1,26 @@
+from typing import Sequence
 import numpy as np
 
 steps = 0
 initialState = []
+all_chosen_sequence = []
+n = 5
+m = 3
+k = 3
 
-def random_choice(n,m,k) :
+class Error(Exception):
+    """Base class for other exceptions"""
+    pass
+
+class ValueChosenTooManyTimes(Error):
+    """Raised when the input value is chosen too many times"""
+    pass
+
+class ValueNotExist(Error):
+    """Raised when the input value does not exist"""
+    pass
+
+def random_choice() :
     state = []
     while True :
         state = list(np.random.randint(low=1,high=n+1,size=k))
@@ -16,15 +33,14 @@ def random_choice(n,m,k) :
     return state
 
 def compare_states(state) :
-    return set(enumerate(state)).intersection(set(enumerate(initialState)))
+    return np.sum(np.array(state) == np.array(initialState))
 
-
-def initialization(n,m,k) :
+def initialization() :
     global steps 
     steps = 0
-    return random_choice(n,m,k)
+    return random_choice()
 
-def checkIsFinal(state,n) :
+def checkIsFinal(state) :
     global steps
     global initialState
     if steps == 2 * n :
@@ -38,8 +54,53 @@ def checkIsFinal(state,n) :
         else :
             return -1
 
+def chosen_sequence():
+    global all_chosen_sequence
+    sequence = []
+    i=1
+    while i <= k :
+        try:
+            color = int(input('Chose a color:'))
+            if color > n or color < 1:
+                raise ValueNotExist
+            elif sequence.count(color) == m :
+                raise ValueChosenTooManyTimes
+            else :
+                sequence.append(color)
+        except ValueError :
+            i -= 1
+            print(i)
+            print("Is not a number. Chose again!")
+        except ValueNotExist :
+            i -= 1
+            print("Wrong color. Chose again!")
+        except ValueChosenTooManyTimes :
+            i -= 1
+            print(i)
+            print("The color was chosen too many times. Chose again!")
+        i += 1
+    all_chosen_sequence.append(sequence)
 
-initialState = initialization(5,3,8)
-print(initialState)
-print(checkIsFinal(initialState,5))
-compare_states()
+def game():
+    global steps
+    global initialState
+    steps = 1
+    initialState = initialization()
+    print(initialState)
+    while steps <= 2*n :
+        chosen_sequence()
+        if checkIsFinal(all_chosen_sequence[-1]) == -1 :
+            print("Number of matches "+str(compare_states(all_chosen_sequence[-1])))
+            print("Your choices:")
+            for choice in all_chosen_sequence :
+                print(choice)
+            steps = steps + 1
+        else :
+            print("Your choices:")
+            for choice in all_chosen_sequence :
+                print(choice)
+            print(checkIsFinal(all_chosen_sequence[-1]))
+            break
+
+
+game()
