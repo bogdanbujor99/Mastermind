@@ -15,6 +15,10 @@ def random_choice(n,m,k) :
             break
     return state
 
+def compare_states(state) :
+    return set(enumerate(state)).intersection(set(enumerate(initialState)))
+
+
 def initialization(n,m,k) :
     global steps 
     steps = 0
@@ -35,10 +39,7 @@ def checkIsFinal(state,n) :
             return -1
 
 
-
-    
-
-
 initialState = initialization(5,3,8)
 print(initialState)
 print(checkIsFinal(initialState,5))
+compare_states()
