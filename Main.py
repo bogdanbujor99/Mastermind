@@ -60,7 +60,7 @@ def chosen_sequence():
     i=1
     while i <= k :
         try:
-            color = int(input('Chose a color:'))
+            color = int(input('Choose a color:'))
             if color > n or color < 1:
                 raise ValueNotExist
             elif sequence.count(color) == m :
@@ -69,15 +69,13 @@ def chosen_sequence():
                 sequence.append(color)
         except ValueError :
             i -= 1
-            print(i)
-            print("Is not a number. Chose again!")
+            print("Is not a number. Choose again!")
         except ValueNotExist :
             i -= 1
-            print("Wrong color. Chose again!")
+            print("Wrong color. Choose again!")
         except ValueChosenTooManyTimes :
             i -= 1
-            print(i)
-            print("The color was chosen too many times. Chose again!")
+            print("The color was choosen too many times. Choose again!")
         i += 1
     all_chosen_sequence.append(sequence)
 
